@@ -1,0 +1,73 @@
+__main__:
+	variable declaration:
+		id: is_prime
+		type:
+			bool
+	assignment:
+		lvalue:
+			var(is_prime)
+		rvalue:
+			bool(true)
+	variable declaration:
+		id: n
+		type:
+			int
+	assignment:
+		lvalue:
+			var(n)
+		rvalue:
+			int(32749)
+	variable declaration:
+		id: i
+		type:
+			int
+	assignment:
+		lvalue:
+			var(i)
+		rvalue:
+			int(2)
+	while loop:
+		condition:
+			and:
+				left:
+					(<=):
+						left:
+							(*):
+								left:
+									var(i)
+								right:
+									var(i)
+						right:
+							var(n)
+				right:
+					var(is_prime)
+		statements:
+			if:
+				condition:
+					(==):
+						left:
+							mod:
+								left:
+									var(n)
+								right:
+									var(i)
+						right:
+							int(0)
+				statements:
+					assignment:
+						lvalue:
+							var(is_prime)
+						rvalue:
+							bool(false)
+			assignment:
+				lvalue:
+					var(i)
+				rvalue:
+					(+):
+						left:
+							var(i)
+						right:
+							int(1)
+	print:
+		var(is_prime)
+		var(i)

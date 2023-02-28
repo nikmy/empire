@@ -1,0 +1,15 @@
+io main() {
+    bool is_prime; is_prime = true;
+
+    int n; n = 32749;
+
+    int i; i = 2;
+    while i * i <= n && is_prime {
+        if n % i == 0 {
+            is_prime = false;
+        }
+        i = i + 1;
+    }
+
+    println(is_prime, i);
+}
