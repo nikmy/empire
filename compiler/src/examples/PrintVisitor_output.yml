@@ -1,32 +1,32 @@
-__main__:
-	variable declaration:
+- io_func_def(main):
+	- variable declaration:
 		id: is_prime
 		type:
 			bool
-	assignment:
+	- assignment:
 		lvalue:
 			var(is_prime)
 		rvalue:
 			bool(true)
-	variable declaration:
+	- variable declaration:
 		id: n
 		type:
 			int
-	assignment:
+	- assignment:
 		lvalue:
 			var(n)
 		rvalue:
 			int(32749)
-	variable declaration:
+	- variable declaration:
 		id: i
 		type:
 			int
-	assignment:
+	- assignment:
 		lvalue:
 			var(i)
 		rvalue:
 			int(2)
-	while loop:
+	- while loop:
 		condition:
 			and:
 				left:
@@ -42,7 +42,7 @@ __main__:
 				right:
 					var(is_prime)
 		statements:
-			if:
+			- if:
 				condition:
 					(==):
 						left:
@@ -54,12 +54,12 @@ __main__:
 						right:
 							int(0)
 				statements:
-					assignment:
+					- assignment:
 						lvalue:
 							var(is_prime)
 						rvalue:
 							bool(false)
-			assignment:
+			- assignment:
 				lvalue:
 					var(i)
 				rvalue:
@@ -68,6 +68,6 @@ __main__:
 							var(i)
 						right:
 							int(1)
-	print:
-		var(is_prime)
-		var(i)
+	- print:
+		- var(is_prime)
+		- var(i)

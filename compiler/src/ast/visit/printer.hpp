@@ -9,11 +9,15 @@ class PrintVisitor : public IVisitor {
  private:
     std::ofstream out_;
     int indent_;
+    bool in_list_;
 
     void visitBinaryOp(const char* op, tree::BinaryOpExpr* expr) {
         makeIndent();
         out_ << op << ":\n";
         ++indent_;
+
+        auto was_in_list = in_list_;
+        in_list_ = false;
 
         makeIndent();
         out_ << "left:\n";
@@ -26,16 +30,21 @@ class PrintVisitor : public IVisitor {
         ++indent_;
         expr->GetRightExpression()->Visit(*this);
         indent_ -= 2;
+
+        in_list_ = was_in_list;
     }
 
  private:
 
     void makeIndent() {
         out_ << std::string(indent_, '\t');
+        if (in_list_) {
+            out_ << "- ";
+        }
     }
 
  public:
-    explicit PrintVisitor(const std::string& filename) : out_(filename), indent_(0) {}
+    explicit PrintVisitor(const std::string& filename) : out_(filename), indent_(0), in_list_(false) {}
 
     ~PrintVisitor() {
         out_.close();
@@ -46,23 +55,28 @@ class PrintVisitor : public IVisitor {
     }
 
     void Visit(tree::MainFunc* main_func) override {
-        out_ << "__main__:\n";
+        out_ << "- io_func_def(main):\n";
         ++indent_;
         main_func->GetStatementList()->Visit(*this);
         --indent_;
     }
 
     void Visit(tree::StatementList* stmt_list) override {
+        in_list_ = true;
         while (stmt_list != nullptr && stmt_list->GetHead() != nullptr) {
             stmt_list->GetHead()->Visit(*this);
             stmt_list = stmt_list->GetTail();
         }
+        in_list_ = false;
     }
 
     void Visit(tree::AssignStmt* assignment_stmt) override {
         makeIndent();
         out_ << "assignment:\n";
         ++indent_;
+
+        auto was_in_list = in_list_;
+        in_list_ = false;
 
         makeIndent();
         out_ << "lvalue:\n";
@@ -77,12 +91,17 @@ class PrintVisitor : public IVisitor {
         ++indent_;
         assignment_stmt->GetRValue()->Visit(*this);
         indent_ -= 2;
+
+        in_list_ = was_in_list;
     }
 
     void Visit(tree::IfStmt* if_stmt) override {
         makeIndent();
         out_ << "if:\n";
         ++indent_;
+
+        auto was_in_list = in_list_;
+        in_list_ = false;
 
         makeIndent();
         out_ << "condition:\n";
@@ -95,12 +114,17 @@ class PrintVisitor : public IVisitor {
         ++indent_;
         if_stmt->GetStatements()->Visit(*this);
         indent_ -= 2;
+
+        in_list_ = was_in_list;
     }
 
     void Visit(tree::IfElseStmt* if_else_stmt) override {
         makeIndent();
         out_ << "if:\n";
         ++indent_;
+
+        auto was_in_list = in_list_;
+        in_list_ = false;
 
         makeIndent();
         out_ << "condition:\n";
@@ -119,6 +143,8 @@ class PrintVisitor : public IVisitor {
         ++indent_;
         if_else_stmt->GetElseStatements()->Visit(*this);
         indent_ -= 2;
+
+        in_list_ = was_in_list;
     }
 
     void Visit(tree::PrintStmt* print_stmt) override {
@@ -137,6 +163,10 @@ class PrintVisitor : public IVisitor {
         makeIndent();
         out_ << "variable declaration:\n";
         ++indent_;
+
+        auto was_in_list = in_list_;
+        in_list_ = false;
+
         makeIndent();
         out_ << "id: " << var_decl->GetVariableName() << "\n";
         makeIndent();
@@ -144,12 +174,17 @@ class PrintVisitor : public IVisitor {
         ++indent_;
         var_decl->GetType()->Visit(*this);
         indent_ -= 2;
+
+        in_list_ = was_in_list;
     }
 
     void Visit(tree::WhileStmt* while_stmt) override {
         makeIndent();
         out_ << "while loop:\n";
         ++indent_;
+
+        auto was_in_list = in_list_;
+        in_list_ = false;
 
         makeIndent();
         out_ << "condition:\n";
@@ -162,13 +197,17 @@ class PrintVisitor : public IVisitor {
         ++indent_;
         while_stmt->GetStatements()->Visit(*this);
         indent_ -= 2;
+
+        in_list_ = was_in_list;
     }
 
     void Visit(tree::ExpressionList* expr_list) override {
+        in_list_ = true;
         while (expr_list != nullptr && expr_list->GetHead() != nullptr) {
             expr_list->GetHead()->Visit(*this);
             expr_list = expr_list->GetTail();
         }
+        in_list_ = false;
     }
 
     void Visit(tree::IntExpr* int_expr) override {
