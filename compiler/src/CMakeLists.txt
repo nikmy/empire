@@ -65,9 +65,8 @@ target_include_directories(
         runtime/
 )
 
-target_sources(
-        ${PROJECT_NAME}
-        PRIVATE
+set(
+        AST_SOURCES
 
         ast/tree/cmd/program.hpp
         ast/tree/cmd/main_func.hpp
@@ -117,13 +116,29 @@ target_sources(
 
         ast/tree/lvalue/lvalue.hpp
         ast/tree/lvalue/reference.hpp
+)
 
-        grammar/parser.cpp
-        grammar/scanner.cpp
+set(
+        VISITORS_SOURCES
 
         ast/visit/visitor.hpp
         ast/visit/printer.hpp
         ast/visit/interpreter.hpp
+
+        ast/visit/printer.cpp
+        ast/visit/interpreter.cpp
+)
+
+target_sources(
+        ${PROJECT_NAME}
+        PRIVATE
+
+        ${AST_SOURCES}
+
+        grammar/parser.cpp
+        grammar/scanner.cpp
+
+        ${VISITORS_SOURCES}
 
         runtime/object.hpp
         runtime/type_info.hpp
