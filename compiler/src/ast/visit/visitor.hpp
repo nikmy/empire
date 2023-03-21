@@ -15,6 +15,7 @@ class IVisitor {
     virtual void Visit(tree::IntExpr* int_expr) = 0;
     virtual void Visit(tree::BoolExpr* bool_expr) = 0;
     virtual void Visit(tree::IdentExpr* ident_expr) = 0;
+    virtual void Visit(tree::FuncCall* func_call) = 0;
 
     virtual void Visit(tree::AddExpr* add_expr) = 0;
     virtual void Visit(tree::SubExpr* sub_expr) = 0;
@@ -39,6 +40,7 @@ class IVisitor {
     virtual void Visit(tree::PrintStmt* print_stmt) = 0;
     virtual void Visit(tree::VarDeclStmt* var_decl_stmt) = 0;
     virtual void Visit(tree::WhileStmt* while_stmt) = 0;
+    virtual void Visit(tree::FuncCallStmt* func_call_stmt) = 0;
 
     virtual void Visit(tree::LValue* lvalue) = 0;
     virtual void Visit(tree::Reference* reference) = 0;
@@ -46,7 +48,13 @@ class IVisitor {
     virtual void Visit(tree::Type* type) = 0;
     virtual void Visit(tree::BasicType* basic_type) = 0;
 
+    virtual void Visit(tree::DeclarationList* decl_list) = 0;
+
     virtual void Visit(tree::VarDecl* var_decl) = 0;
+    virtual void Visit(tree::FuncDecl* func_decl) = 0;
+
+    virtual void Visit(tree::FormalArg* arg) = 0;
+    virtual void Visit(tree::FormalArgList* arg_list) = 0;
 };
 
 }

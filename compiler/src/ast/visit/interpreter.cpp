@@ -266,4 +266,28 @@ void EvalVisitor::Visit(tree::VarDecl* var_decl) {
     last_id_ = varName;
 }
 
+void EvalVisitor::Visit(tree::FuncCall* func_call) {
+
+}
+
+void EvalVisitor::Visit(tree::FuncCallStmt* func_call_stmt) {
+
+}
+
+void EvalVisitor::Visit(tree::DeclarationList* decl_list) {
+
+}
+
+void EvalVisitor::Visit(tree::FuncDecl* func_decl) {
+
+}
+
+void EvalVisitor::Visit(tree::FormalArg* arg) {
+
+}
+
+void EvalVisitor::Visit(tree::FormalArgList* arg_list) {
+
+}
+
 }

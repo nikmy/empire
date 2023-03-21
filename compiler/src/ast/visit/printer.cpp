@@ -279,4 +279,28 @@ void PrintVisitor::Visit(tree::BasicType* basic_type) {
     out_ << basic_type->GetIdentifier() << '\n';
 }
 
+void PrintVisitor::Visit(tree::FuncCall* func_call) {
+
+}
+
+void PrintVisitor::Visit(tree::FuncCallStmt* func_call_stmt) {
+
+}
+
+void PrintVisitor::Visit(tree::DeclarationList* decl_list) {
+
+}
+
+void PrintVisitor::Visit(tree::FuncDecl* func_decl) {
+
+}
+
+void PrintVisitor::Visit(tree::FormalArg* arg) {
+
+}
+
+void PrintVisitor::Visit(tree::FormalArgList* arg_list) {
+
+}
+
 }

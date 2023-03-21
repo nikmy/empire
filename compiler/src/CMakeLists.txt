@@ -77,6 +77,7 @@ set(
         ast/tree/expression/expression.hpp
         ast/tree/expression/expression_list.hpp
         ast/tree/expression/binary_op.hpp
+        ast/tree/expression/function_call.hpp
 
         ast/tree/expression/integer.hpp
         ast/tree/expression/bool.hpp
@@ -107,12 +108,17 @@ set(
         ast/tree/statement/if_else.hpp
         ast/tree/statement/while.hpp
         ast/tree/statement/print.hpp
+        ast/tree/statement/function_call_stmt.hpp
 
         ast/tree/type/type.hpp
         ast/tree/type/basic_type.hpp
 
         ast/tree/declaration/declaration.hpp
+        ast/tree/declaration/declaration_list.hpp
+        ast/tree/declaration/func_decl.hpp
         ast/tree/declaration/var_decl.hpp
+        ast/tree/declaration/formal_arg.hpp
+        ast/tree/declaration/formal_arg_list.hpp
 
         ast/tree/lvalue/lvalue.hpp
         ast/tree/lvalue/reference.hpp

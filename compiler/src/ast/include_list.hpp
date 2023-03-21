@@ -24,9 +24,14 @@
 #include "sub.hpp"
 #include "mod.hpp"
 #include "equal.hpp"
+#include "function_call.hpp"
 
 #include "declaration.hpp"
+#include "declaration_list.hpp"
 #include "var_decl.hpp"
+#include "func_decl.hpp"
+#include "formal_arg.hpp"
+#include "formal_arg_list.hpp"
 
 #include "statement.hpp"
 #include "statement_list.hpp"
@@ -34,6 +39,7 @@
 #include "if.hpp"
 #include "print.hpp"
 #include "var_decl_stmt.hpp"
+#include "function_call_stmt.hpp"
 #include "while.hpp"
 #include "if_else.hpp"
 

@@ -87,6 +87,12 @@ class PrintVisitor : public IVisitor {
     }
 
     void Visit(tree::BasicType* basic_type) override;
+    void Visit(tree::FuncCall* func_call) override;
+    void Visit(tree::FuncCallStmt* func_call_stmt) override;
+    void Visit(tree::DeclarationList* decl_list) override;
+    void Visit(tree::FuncDecl* func_decl) override;
+    void Visit(tree::FormalArg* arg) override;
+    void Visit(tree::FormalArgList* arg_list) override;
 };
 
 }

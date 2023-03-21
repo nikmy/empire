@@ -79,6 +79,12 @@ class EvalVisitor : public IVisitor {
     }
 
     void Visit(tree::VarDecl* var_decl) override;
+    void Visit(tree::FuncCall* func_call) override;
+    void Visit(tree::FuncCallStmt* func_call_stmt) override;
+    void Visit(tree::DeclarationList* decl_list) override;
+    void Visit(tree::FuncDecl* func_decl) override;
+    void Visit(tree::FormalArg* arg) override;
+    void Visit(tree::FormalArgList* arg_list) override;
 
  private:
     std::unordered_map<std::string, runtime::Object> symbols_;
