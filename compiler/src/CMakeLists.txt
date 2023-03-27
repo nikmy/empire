@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
 
-cmake_policy(SET CMP0076 NEW)
-
 set(
         PROJECT_NAME
         empire_compiler
@@ -39,6 +37,12 @@ ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 
+find_package(LLVM REQUIRED CONFIG)
+
+message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+message(STATUS "llvm include: ${LLVM_INCLUDE_DIRS}")
+
 add_executable(
         ${PROJECT_NAME}
         main.cpp
@@ -46,6 +50,8 @@ add_executable(
         ${BISON_MyParser_OUTPUTS}
         ${FLEX_MyScanner_OUTPUTS}
 )
+
+target_include_directories(${PROJECT_NAME} PRIVATE /usr/include/llvm-12)
 
 target_include_directories(
         ${PROJECT_NAME}
@@ -63,6 +69,22 @@ target_include_directories(
         ast/tree/cmd
         ast/visit
         runtime/
+)
+
+set(
+        GRAMMAR_SOURCES
+
+        grammar/parser.cpp
+        grammar/scanner.cpp
+)
+
+set(
+        OBJECT_SOURCES
+
+        runtime/object.hpp
+        runtime/type_info.hpp
+
+        driver.cpp
 )
 
 set(
@@ -128,27 +150,25 @@ set(
         VISITORS_SOURCES
 
         ast/visit/visitor.hpp
+        ast/visit/template_visitor.hpp
         ast/visit/printer.hpp
         ast/visit/interpreter.hpp
+        ast/visit/ir_builder.hpp
 
         ast/visit/printer.cpp
         ast/visit/interpreter.cpp
+        ast/visit/ir_builder.cpp
 )
+
+set(SOURCES ${AST_SOURCES} ${GRAMMAR_SOURCES} ${VISITORS_SOURCES})
 
 target_sources(
         ${PROJECT_NAME}
         PRIVATE
-
-        ${AST_SOURCES}
-
-        grammar/parser.cpp
-        grammar/scanner.cpp
-
-        ${VISITORS_SOURCES}
-
-        runtime/object.hpp
-        runtime/type_info.hpp
-
         main.cpp
-        driver.cpp
+        ${SOURCES}
 )
+
+llvm_map_components_to_libnames(llvm_libs support core irreader)
+
+target_link_libraries(${PROJECT_NAME} ${llvm_libs})

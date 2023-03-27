@@ -3,6 +3,7 @@
 
 #include "printer.hpp"
 #include "interpreter.hpp"
+#include "ir_builder.hpp"
 
 #include <fstream>
 
@@ -43,6 +44,13 @@ void Driver::PrintTree(const std::string& filename) {
 }
 
 void Driver::Evaluate() {
-    ast::visit::EvalVisitor i;
-    program_->Visit(i);
+//    ast::visit::EvalVisitor i;
+//    program_->Visit(i);
+    ast::visit::IRBuilder ir_builder;
+    program_->Visit(ir_builder);
+
+    std::error_code error_code;
+    llvm::raw_fd_ostream ll("test.ll", error_code);
+    ir_builder.GetModule().print(ll, nullptr);
+    ir_builder.GetModule().print(llvm::errs(), nullptr);
 }

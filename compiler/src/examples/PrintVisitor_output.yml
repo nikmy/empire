@@ -70,4 +70,4 @@
 							int(1)
 	- print:
 		- var(is_prime)
-		- var(i)
+		- var(n)
