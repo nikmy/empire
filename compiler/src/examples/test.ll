@@ -20,7 +20,7 @@ entry:
   store i32 %5, i32* %i, align 4
   br label %6
 
-6:                                                ; preds = %39, %entry
+6:                                                ; preds = %40, %entry
   %7 = load i32, i32* %i, align 4
   %8 = load i32, i32* %i, align 4
   %9 = mul i32 %7, %8
@@ -53,35 +53,35 @@ entry:
   %29 = alloca i1, align 1
   store i1 %28, i1* %29, align 1
   %30 = load i1, i1* %29, align 1
-  br i1 %30, label %36, label %39
+  br i1 %30, label %37, label %40
 
 31:                                               ; preds = %6
   %32 = load i1, i1* %is_prime, align 1
   %33 = load i32, i32* %n, align 4
-  %34 = alloca [8 x i8], align 1
-  store [8 x i8] c"%d %d \0A\00", [8 x i8]* %34, align 1
-  %35 = bitcast [8 x i8]* %34 to i8*
-  %printCall = call i32 (i8*, i1, i32, ...) @printf(i8* %35, i1 %32, i32 %33)
+  %34 = alloca [7 x i8], align 1
+  store [7 x i8] c"%d %d\0A\00", [7 x i8]* %34, align 1
+  %35 = bitcast [7 x i8]* %34 to i8*
+  %36 = call i32 (i8*, ...) @printf(i8* %35, i1 %32, i32 %33)
   ret void
 
-36:                                               ; preds = %20
-  %37 = alloca i1, align 1
-  store i1 false, i1* %37, align 1
-  %38 = load i1, i1* %37, align 1
-  store i1 %38, i1* %is_prime, align 1
-  br label %39
+37:                                               ; preds = %20
+  %38 = alloca i1, align 1
+  store i1 false, i1* %38, align 1
+  %39 = load i1, i1* %38, align 1
+  store i1 %39, i1* %is_prime, align 1
+  br label %40
 
-39:                                               ; preds = %36, %20
-  %40 = load i32, i32* %i, align 4
-  %41 = alloca i32, align 4
-  store i32 1, i32* %41, align 4
-  %42 = load i32, i32* %41, align 4
-  %43 = add i32 %40, %42
-  %44 = alloca i32, align 4
-  store i32 %43, i32* %44, align 4
-  %45 = load i32, i32* %44, align 4
-  store i32 %45, i32* %i, align 4
+40:                                               ; preds = %37, %20
+  %41 = load i32, i32* %i, align 4
+  %42 = alloca i32, align 4
+  store i32 1, i32* %42, align 4
+  %43 = load i32, i32* %42, align 4
+  %44 = add i32 %41, %43
+  %45 = alloca i32, align 4
+  store i32 %44, i32* %45, align 4
+  %46 = load i32, i32* %45, align 4
+  store i32 %46, i32* %i, align 4
   br label %6
 }
 
-declare i32 @printf(i8*, i1, i32, ...)
+declare i32 @printf(i8*, ...)

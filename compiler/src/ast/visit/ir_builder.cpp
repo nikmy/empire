@@ -155,7 +155,7 @@ void IRBuilder::Visit(ast::tree::OrExpr* or_expr) {
     if (left->getType() != builder_->getInt1Ty() || left->getType() != right->getType()) {
         throw std::runtime_error("(||): operands have incompatible types");
     }
-    auto result = builder_->CreateAdd(left, right);
+    auto result = builder_->CreateOr(left, right);
     auto alloca = builder_->CreateAlloca(llvm::Type::getInt1Ty(context_));
     builder_->CreateStore(result, alloca);
     SetValue(alloca);
@@ -276,11 +276,9 @@ void IRBuilder::Visit(ast::tree::PrintStmt* print_stmt) {
 
     // Will be filled when format string is built
     arg_values.push_back(nullptr);
-    arg_types.push_back(nullptr);
 
     for (auto list = print_stmt->GetExpressions(); list && list->GetHead(); list = list->GetTail()) {
         llvm::Value* arg = unwrapIfPointer(Accept(list->GetHead()));
-        arg_types.push_back(arg->getType());
         arg_values.push_back(arg);
         fmt_string += "%d ";
     }
@@ -299,23 +297,15 @@ void IRBuilder::Visit(ast::tree::PrintStmt* print_stmt) {
 
     // Fill first argument
     arg_values[0] = fmt;
-    arg_types[0] = fmt->getType();
 
     auto printf_type = llvm::FunctionType::get(
-        llvm::Type::getInt32Ty(context_),
-        arg_types,
-        true
+        llvm::Type::getInt32Ty(context_), {fmt->getType()}, true
     );
 
-
-    auto printfFunction = llvm::Function::Create(
-        printf_type, llvm::Function::ExternalLinkage,
-        "printf",
-        module_
-    );
+    auto printf_callee = module_.getOrInsertFunction("printf", printf_type);
 
     SetValue(
-        builder_->CreateCall(printfFunction, arg_values, "printCall")
+        builder_->CreateCall(printf_callee, arg_values)
     );
 }
 
