@@ -28,12 +28,20 @@ class MainFunc;
 // Declarations
 
 class Declaration;
+class DeclarationList;
+
 class VarDecl;
+class FuncDecl;
+
+class FormalArg;
+class FormalArgList;
 
 // Statements
 
 class Statement;
 class StatementList;
+
+class FuncCallStmt;
 
 class VarDeclStmt;
 class AssignStmt;
@@ -46,6 +54,8 @@ class PrintStmt;
 
 class Expression;
 class ExpressionList;
+
+class FuncCall;
 
 class IntExpr;
 class BoolExpr;

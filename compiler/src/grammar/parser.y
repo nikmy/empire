@@ -67,6 +67,7 @@
     BOOL "bool"
     SEMICOLON ";"
     IO "io"
+    PURE "pure"
     MAIN "main"
     LSBRACKET "["
     RSBRACKET "]"
@@ -92,12 +93,21 @@
 %nterm <Expression*> expression;
 %nterm <ExpressionList*> expression_list;
 
+%nterm <FuncCall*> func_call;
+
 %nterm <Type*> type;
 %nterm <BasicType*> basic_type;
+%nterm <Type*> io_return_type;
 
 %nterm <LValue*> lvalue;
 
+%nterm <Declaration*> declaration;
+%nterm <DeclarationList*> declaration_list;
+
 %nterm <VarDecl*> variable_declaration;
+%nterm <FuncDecl*> func_declaration;
+%nterm <FormalArg*> formal;
+%nterm <FormalArgList*> formal_list;
 
 // %printer { yyo << $$; } <*>;
 
@@ -136,6 +146,8 @@ statement:
         { $$ = new AssignStmt($1, $3); }
     | "println" "(" expression_list ")" ";"
         { $$ = new PrintStmt($3); }
+    | func_call ";"
+        { $$ = new FuncCallStmt($1); }
     ;
 
 type:
@@ -181,10 +193,47 @@ expression:
     | expression "||" expression           { $$ = new OrExpr($1, $3); }
     | expression "==" expression           { $$ = new EqExpr($1, $3); }
     | "(" expression ")"                   { $$ = $2; }
+    | func_call                            { $$ = $1; }
+    ;
+
+declaration_list:
+    %empty                         { $$ = nullptr; }
+    | declaration declaration_list { $$ = new DeclarationList($1, $2); }
+    ;
+
+declaration:
+    variable_declaration { $$ = $1; }
+    | func_declaration   { $$ = $1; }
     ;
 
 variable_declaration:
     type IDENTIFIER ";" { $$ = new VarDecl($1, $2); }
+    ;
+
+func_declaration:
+    "io" IDENTIFIER "(" formal_list ")" io_return_type "{" statement_list "}"
+        { $$ = new FuncDecl(true, $2, $4, $6, $8); }
+    | "pure" IDENTIFIER "(" formal_list ")" type "{" statement_list "}"
+        { $$ = new FuncDecl(false, $2, $4, $6, $8); }
+    ;
+
+formal_list:
+    %empty               { $$ = nullptr; }
+    | formal             { $$ = new FormalArgList($1, nullptr); }
+    | formal formal_list { $$ = new FormalArgList($1, $2); }
+    ;
+
+formal:
+    type IDENTIFIER { $$ = new FormalArg($1, $2); }
+    ;
+
+io_return_type:
+    %empty { $$ = nullptr; }
+    | type { $$ = $1; }
+    ;
+
+func_call:
+    IDENTIFIER "(" expression_list ")" { $$ = new FuncCall($1, $3); }
     ;
 
 expression_list:

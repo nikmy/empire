@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
 
-cmake_policy(SET CMP0076 NEW)
-
 set(
         PROJECT_NAME
         empire_compiler
@@ -39,6 +37,12 @@ ADD_FLEX_BISON_DEPENDENCY(MyScanner MyParser)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 
+find_package(LLVM REQUIRED CONFIG)
+
+message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+message(STATUS "llvm include: ${LLVM_INCLUDE_DIRS}")
+
 add_executable(
         ${PROJECT_NAME}
         main.cpp
@@ -46,6 +50,8 @@ add_executable(
         ${BISON_MyParser_OUTPUTS}
         ${FLEX_MyScanner_OUTPUTS}
 )
+
+target_include_directories(${PROJECT_NAME} PRIVATE /usr/include/llvm-12)
 
 target_include_directories(
         ${PROJECT_NAME}
@@ -65,9 +71,24 @@ target_include_directories(
         runtime/
 )
 
-target_sources(
-        ${PROJECT_NAME}
-        PRIVATE
+set(
+        GRAMMAR_SOURCES
+
+        grammar/parser.cpp
+        grammar/scanner.cpp
+)
+
+set(
+        OBJECT_SOURCES
+
+        runtime/object.hpp
+        runtime/type_info.hpp
+
+        driver.cpp
+)
+
+set(
+        AST_SOURCES
 
         ast/tree/cmd/program.hpp
         ast/tree/cmd/main_func.hpp
@@ -78,6 +99,7 @@ target_sources(
         ast/tree/expression/expression.hpp
         ast/tree/expression/expression_list.hpp
         ast/tree/expression/binary_op.hpp
+        ast/tree/expression/function_call.hpp
 
         ast/tree/expression/integer.hpp
         ast/tree/expression/bool.hpp
@@ -108,26 +130,45 @@ target_sources(
         ast/tree/statement/if_else.hpp
         ast/tree/statement/while.hpp
         ast/tree/statement/print.hpp
+        ast/tree/statement/function_call_stmt.hpp
 
         ast/tree/type/type.hpp
         ast/tree/type/basic_type.hpp
 
         ast/tree/declaration/declaration.hpp
+        ast/tree/declaration/declaration_list.hpp
+        ast/tree/declaration/func_decl.hpp
         ast/tree/declaration/var_decl.hpp
+        ast/tree/declaration/formal_arg.hpp
+        ast/tree/declaration/formal_arg_list.hpp
 
         ast/tree/lvalue/lvalue.hpp
         ast/tree/lvalue/reference.hpp
+)
 
-        grammar/parser.cpp
-        grammar/scanner.cpp
+set(
+        VISITORS_SOURCES
 
         ast/visit/visitor.hpp
+        ast/visit/template_visitor.hpp
         ast/visit/printer.hpp
         ast/visit/interpreter.hpp
+        ast/visit/ir_builder.hpp
 
-        runtime/object.hpp
-        runtime/type_info.hpp
-
-        main.cpp
-        driver.cpp
+        ast/visit/printer.cpp
+        ast/visit/interpreter.cpp
+        ast/visit/ir_builder.cpp
 )
+
+set(SOURCES ${AST_SOURCES} ${GRAMMAR_SOURCES} ${VISITORS_SOURCES})
+
+target_sources(
+        ${PROJECT_NAME}
+        PRIVATE
+        main.cpp
+        ${SOURCES}
+)
+
+llvm_map_components_to_libnames(llvm_libs support core irreader)
+
+target_link_libraries(${PROJECT_NAME} ${llvm_libs})

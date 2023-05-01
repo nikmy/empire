@@ -65,6 +65,7 @@ blank [ \t\r]
 "int"      return yy::parser::make_INT             (loc);
 
 "io"       return yy::parser::make_IO              (loc);
+"pure"     return yy::parser::make_PURE            (loc);
 "main"     return yy::parser::make_MAIN            (loc);
 
 ";"        return yy::parser::make_SEMICOLON       (loc);
